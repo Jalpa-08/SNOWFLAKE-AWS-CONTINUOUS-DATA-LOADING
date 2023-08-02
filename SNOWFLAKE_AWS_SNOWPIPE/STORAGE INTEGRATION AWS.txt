@@ -1,0 +1,29 @@
+----------------------------------------------------AWS (S3) INTEGRATION------------------------------------------------------------------------
+CREATE OR REPLACE STORAGE integration s3_int
+TYPE = EXTERNAL_STAGE
+STORAGE_PROVIDER = S3
+ENABLED = TRUE
+STORAGE_AWS_ROLE_ARN ='arn:aws:iam::423047454832:role/RETAILROLE' 
+STORAGE_ALLOWED_LOCATIONS =('s3://mybucket4912/');
+
+DESC integration s3_int;
+
+USE DATABASE RETAILS_TRANSACTION;
+USE RETAILS_TRANSACTION;
+
+CREATE OR REPLACE FILE FORMAT RETAIL_CSV
+  type = 'csv'
+  compression = 'none'
+  field_delimiter = ','
+  field_optionally_enclosed_by = 'none'
+  skip_header = 1;
+
+
+CREATE OR REPLACE STAGE RETAIL
+URL ='s3://mybucket4912'
+file_format = RETAIL_CSV
+storage_integration = s3_int;
+
+LIST @RETAIL;
+
+SHOW STAGES;
